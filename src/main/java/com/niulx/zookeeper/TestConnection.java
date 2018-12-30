@@ -1,8 +1,7 @@
 package com.niulx.zookeeper;
 
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
+import org.apache.zookeeper.data.Stat;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -19,6 +18,20 @@ public class TestConnection {
             }
         });
         c.await();
-        System.out.println("连接成功:"+z.getState());
+        System.out.println("连接成功:" + z.getState());
+
+
+        z.create("/temp", "zk".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+
+        Stat stat = new Stat();
+        System.out.println(new String(z.getData("/temp", null, stat)));
+
+        z.setData("/temp", "test".getBytes(), stat.getVersion());
+
+        System.out.println(new String(z.getData("/temp", null, stat)));
+
+        z.delete("/temp", stat.getVersion());
+
+
     }
 }
