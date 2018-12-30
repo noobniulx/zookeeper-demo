@@ -28,6 +28,7 @@ public class CuratorTest {
         /** 修改节点*/
         curatorFramework.setData().withVersion(stat.getVersion()).forPath("/temp","2".getBytes());
 
+
         curatorFramework.close();
     }
 }
