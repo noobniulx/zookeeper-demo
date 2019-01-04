@@ -36,6 +36,20 @@ public class DistributeLock {
         return null;
     }
 
+    public boolean releaseLockWithlua(String lockName, String identifier) {
+        System.out.println(lockName + "-开始释放锁:" + identifier);
+        String key = "lock" + lockName;
+        Jedis jedis = JedisUtils.getResource();
+        String lua = "if redis.call(\"get\",KEYS[1])==ARGV[1] then" +
+                " return redis.call(\"del\",KEYS[1]) " +
+                "else return 0 end";
+        Long rs = (Long) jedis.eval(lua, 1, new String[]{key, identifier});
+        if (rs.intValue() > 0) {
+            return true;
+        }
+        return false;
+    }
+
     // 释放锁
     public boolean releaseLock(String lockName, String identifier) {
         System.out.println(lockName + "-开始释放锁:" + identifier);
